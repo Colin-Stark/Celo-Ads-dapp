@@ -40,12 +40,6 @@ contract AdMarketplace {
         uint256 endTime;
         bool purchased;
     }
-    
-    // Event for when an advertiser is authorized
-event AdvertiserAuthorized(address advertiser);
-
-// Event for when an advertiser is deauthorized
-event AdvertiserDeauthorized(address advertiser);
 
 // Event for when an advertisement space is created
 event AdSpaceCreated(
@@ -57,19 +51,8 @@ event AdSpaceCreated(
     uint256 startTime,
     uint256 endTime
 );
-
-// Event for when an advertisement space is deleted
-event AdSpaceDeleted(uint256 indexed adSpaceId);
-
-// Event for when an advertisement space is purchased
-event AdSpacePurchased(
-    uint256 indexed adSpaceId,
-    address indexed purchaser,
-    uint256 price
-);
-
-    
-    // Event for when an advertiser is authorized
+ 
+// Event for when an advertiser is authorized
 
 event AdvertiserAuthorized(address advertiser);
 
@@ -82,8 +65,6 @@ event AdvertiserDeauthorized(address advertiser);
 event AdSpaceCreated(
 
     address indexed owner,
-
-    uint256 indexed adSpaceId,
 
     string name,
 
@@ -99,19 +80,9 @@ event AdSpaceCreated(
 
 // Event for when an advertisement space is deleted
 
-event AdSpaceDeleted(uint256 indexed adSpaceId);
+event AdSpaceDeleted(uint256 adSpaceId);
 
 // Event for when an advertisement space is purchased
-
-event AdSpacePurchased(
-
-    uint256 indexed adSpaceId,
-
-    address indexed purchaser,
-
-    uint256 price
-
-);
     
     // Owner of the marketplace
     address public owner;
@@ -148,7 +119,7 @@ event AdSpacePurchased(
 
         Authorized[advertiser] = true;
         
-        emit AdvertiserAuthorized(_advertiser);
+        emit AdvertiserAuthorized(advertiser);
 
     }
 
@@ -158,7 +129,7 @@ event AdSpacePurchased(
 
         Authorized[advertiser] = false;
         
-        emit AdvertiserDeauthorized(_advertiser);
+        emit AdvertiserDeauthorized(advertiser);
 
     }
     
@@ -177,6 +148,8 @@ event AdSpacePurchased(
         require(startTime + 30 days >= block.timestamp, "End time cannot be in the past");
         // Only allow authorized advertisers to create advertisement spaces
         require(Authorized[msg.sender] , "Only authorized advertisers can create advertisement spaces.");
+
+        uint256 endTimes = startTime + 30 days;
         
         // Create the advertisement space struct
         AdSpace memory adSpace = AdSpace({
@@ -193,7 +166,7 @@ event AdSpacePurchased(
         adSpaces[AdSpacesCount] = adSpace;
         AdSpacesCount++;
         
-        emit AdSpaceCreated(msg.sender, adSpaceId, _name, _image, _price, _startTime, _endTime);
+        emit AdSpaceCreated(msg.sender, name, image, price, startTime, endTimes);
     }
     
     // Function for companies authorized by the marketplace owner to purchase an advertisement space
@@ -214,7 +187,7 @@ event AdSpacePurchased(
         require(price == adSpace.price, "Incorrect amount of ether sent.");
         
         // Transfer the ether to the owner of the advertisement space
-        address payable ownerAddress = payable(adSpace.owner);
+        // address payable ownerAddress = payable(adSpace.owner);
         require(IERC20Token(cUSDContractAddress).transferFrom(msg.sender, adSpace.owner, adSpace.price), "transfer Failed");
         // Mark the advertisement space as purchased
         adSpace.purchased = true;
@@ -226,7 +199,7 @@ event AdSpacePurchased(
     function DeleteAd(uint _index) public{
         require((adSpaces[_index].owner == msg.sender), "Only and ad Space owner can delete an ad space");
         delete adSpaces[_index] ;
-        emit AdSpaceDeleted(_adSpaceId);
+        emit AdSpaceDeleted(_index);
     }
     
     function adSpacesLength() public view returns(uint){
