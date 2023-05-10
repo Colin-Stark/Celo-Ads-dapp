@@ -41,6 +41,50 @@ contract AdMarketplace {
         bool purchased;
     }
     
+    // Event for when an advertiser is authorized
+
+event AdvertiserAuthorized(address advertiser);
+
+// Event for when an advertiser is deauthorized
+
+event AdvertiserDeauthorized(address advertiser);
+
+// Event for when an advertisement space is created
+
+event AdSpaceCreated(
+
+    address indexed owner,
+
+    uint256 indexed adSpaceId,
+
+    string name,
+
+    string image,
+
+    uint256 price,
+
+    uint256 startTime,
+
+    uint256 endTime
+
+);
+
+// Event for when an advertisement space is deleted
+
+event AdSpaceDeleted(uint256 indexed adSpaceId);
+
+// Event for when an advertisement space is purchased
+
+event AdSpacePurchased(
+
+    uint256 indexed adSpaceId,
+
+    address indexed purchaser,
+
+    uint256 price
+
+);
+    
     // Owner of the marketplace
     address public owner;
     
