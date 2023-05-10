@@ -103,7 +103,7 @@ contract AdMarketplace {
 
         require(startTime >= block.timestamp, "Start time must be in the future");
 
-        require(startTime + 30 days >=
+        require(startTime + 30 days >= block.timestamp, "End time cannot be in the past");
         // Only allow authorized advertisers to create advertisement spaces
         require(Authorized[msg.sender] , "Only authorized advertisers can create advertisement spaces.");
         
