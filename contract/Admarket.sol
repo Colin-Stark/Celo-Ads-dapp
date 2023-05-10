@@ -71,11 +71,35 @@ contract AdMarketplace {
     }
 
     
+//    Function for the marketplace owner to authorize an advertiser
 
+    function authorizeAdvertiser(address advertiser) public onlyOwner {
+
+        Authorized[advertiser] = true;
+
+    }
+
+    // Function for the marketplace owner to deauthorize an advertiser
+
+    function deauthorizeAdvertiser(address advertiser) public onlyOwner {
+
+        Authorized[advertiser] = false;
+
+    }
     
     
     // Function for advertisers authorized by the owner of the marketplace to create an advertisement space
     function createAdSpace(string calldata name, string calldata image, uint256 price, uint256 startTime) public {
+    
+        require(bytes(name).length > 0, "Name cannot be empty");
+
+        require(bytes(image).length > 0, "Image URL cannot be empty");
+
+        require(price > 0, "Price must be greater than zero");
+
+        require(startTime >= block.timestamp, "Start time must be in the future");
+
+        require(startTime + 30 days >=
         // Only allow authorized advertisers to create advertisement spaces
         require(Authorized[msg.sender] , "Only authorized advertisers can create advertisement spaces.");
         
