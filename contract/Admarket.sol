@@ -76,6 +76,8 @@ contract AdMarketplace {
     function authorizeAdvertiser(address advertiser) public onlyOwner {
 
         Authorized[advertiser] = true;
+        
+        emit AdvertiserAuthorized(_advertiser);
 
     }
 
@@ -84,6 +86,8 @@ contract AdMarketplace {
     function deauthorizeAdvertiser(address advertiser) public onlyOwner {
 
         Authorized[advertiser] = false;
+        
+        emit AdvertiserDeauthorized(_advertiser);
 
     }
     
@@ -117,6 +121,8 @@ contract AdMarketplace {
         // Add the advertisement space to the mapping
         adSpaces[AdSpacesCount] = adSpace;
         AdSpacesCount++;
+        
+        emit AdSpaceCreated(msg.sender, adSpaceId, _name, _image, _price, _startTime, _endTime);
     }
     
     // Function for companies authorized by the marketplace owner to purchase an advertisement space
@@ -149,6 +155,7 @@ contract AdMarketplace {
     function DeleteAd(uint _index) public{
         require((adSpaces[_index].owner == msg.sender), "Only and ad Space owner can delete an ad space");
         delete adSpaces[_index] ;
+        emit AdSpaceDeleted(_adSpaceId);
     }
     
     function adSpacesLength() public view returns(uint){
